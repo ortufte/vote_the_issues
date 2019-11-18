@@ -1,8 +1,6 @@
 # VoteTheIssues
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/vote_the_issues`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+An interactive CLI that helps you (the voter), find the candidate who's views align best with yours on the issues that matter to you most. 
 
 ## Installation
 
