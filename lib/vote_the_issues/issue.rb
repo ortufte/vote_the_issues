@@ -1,9 +1,16 @@
-class Issue
-    attr_accessor :name 
+class VoteTheIssues::Issue
+
+    attr_accessor :name
 
     @@issues = [ ]
 
-    def initialize(name)
-        @name = name
+    def initialize
         @@issues << self 
     end
+
+    def self.all
+        VoteTheIssues::Scraper.scrape_issues
+        @@issues
+    end
+
+end

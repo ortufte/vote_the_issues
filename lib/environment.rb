@@ -5,8 +5,6 @@ require_relative "./vote_the_issues/issue"
 require_relative "./vote_the_issues/scraper"
 
 require "pry"
+require "nokogiri"
+require "open-uri"
 
-module VoteTheIssues
-  class Error < StandardError; end
-  # Your code goes here...
-end

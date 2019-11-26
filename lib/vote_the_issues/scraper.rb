@@ -1,78 +1,55 @@
-require 'nokogiri'
-require 'open-uri'
-require 'pry'
+class VoteTheIssues::Scraper
 
-class Scraper
-    
-    def self.scrape_main_page(url)
-        candidates = [ ] #candidates for candidate list
-        issues = [ ] #issues for issue list
-        candidate_urls = [ ] #candidate_urls
-        issue_urls = [ ] #candidate_urls 
-        
-        doc = Nokogiri::HTML(open(url))
-        
-        #candidates for candidate list
-        names = doc.css(".border-container")
-        candidate.name = names.each do |name|
-            name.css("img").attr("alt").to_s.sub(" 2020 election candidate", "")
-            candidates << candidate.name
-        end
+    def self.scrape_candidates #DONE
 
-        #issues for issue list
-        topics = doc.css(".issues-list li")
-        issue = topics.each do |topic|
-            issue.name = topic.css("a").text
-            issues << issue.name
-        end
+        doc = Nokogiri::HTML(open("https://www.politico.com/2020-election/candidates-views-on-the-issues/"))
 
-        #candidate_urls to operate on in candidate viewpoint method - will need to add BASE_PATH before
         candidate_heads = doc.css(".candidate-head")
         candidate_heads.each do |candidate_head|
+
             candidate_data = candidate_head.css("a").attr("data-tip")
             data = JSON.parse(candidate_data)
-            candidate.profile_url = data["slug"]
-            candidate_urls << candidate.profile_url
+            candidate_object = VoteTheIssues::Candidate.new
+            candidate_object.name = data["full_name"]
+            candidate_object.candidate_url = data["slug"]
+
         end
 
-        #issue_urls to operate on in issue viewpoints method
-        issue_headers = doc.css(".issues-list li")
-        issue_headers.each do |issue_header|
-            issue_url = issue_header.css("a").attr("href")
-            issue_urls << issue_url
-        end
+        def self.scrape_candidate_issues(candidate_url) #DONE
 
-    end
-
-    def scrape_candidate_page(profile_url)
-
-        candidate.issues = [ ] #candidate issues to list after candidate chosen 
-        candidate.views = [ ] #candidate views to display after a view is chosen && after issue chosen from main 
-        
-        doc = Nokogiri::HTML(open(profile_url))
-
-        things = doc.css(".position-name")
-        
-        things.each do |thing|
-        candidate_issue = thing.css(".issue-name").text
-        candidate.issues << candidate_issue
-        end
-
-        things.each do |thing|
-        candidate_stance = thing.css(".position-stance-name").text
-        candidate.views << candidate_stance
-        end
-    end
-
-    def scrape_issue_page(issue_url)
-        doc = Nokogiri::HTML(open(issue_url))
-
-        issue.candidates = [ ] #issue candidates to list after issue chosen
-
-        candidates = doc.css(".border-container")
-        candidates.each do |candidate|
-            issue_candidate = thing.css("img").attr("alt").to_s.sub(" 2020 election candidate", "")
-            issue.candidates << issue_candidate
+            doc = Nokogiri::HTML(open("https://www.politico.com/2020-election/candidates-views-on-the-issues/#{candidate_url}"))
+    
+            @issues = [ ]
+            things = doc.css(".issue-name")
+            things.each do |thing|
+                @issues << thing.text
             end
+            @issues
+        end
+
+        def self.scrape_candidate_views(candidate_url)
+
+            doc = Nokogiri::HTML(open("https://www.politico.com/2020-election/candidates-views-on-the-issues/#{candidate_url}"))
+    
+            @views = [ ]
+            things = doc.css(".position-stance-name")
+            things.each do |thing|
+                @views << thing.text
+            end
+            @views
+        end
+
     end
 
+    def self.scrape_issues #DONE
+
+        doc = Nokogiri::HTML(open("https://www.politico.com/2020-election/candidates-views-on-the-issues/"))
+
+        topics = doc.css(".issues-list li")
+        topic = topics.each do |topic|
+            issue = VoteTheIssues::Issue.new
+            issue.name = topic.css("a").text
+        end
+    end
+
+end
