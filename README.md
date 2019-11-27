@@ -10,7 +10,7 @@ An interactive CLI that helps you (the voter), find the candidate who's views al
 
 From the local directory execute:
 
-$ vote_the_issues
+$ ./bin/vote_the_issues
 
 and follow the on screen prompts.
 
