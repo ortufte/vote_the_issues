@@ -9,8 +9,12 @@ class VoteTheIssues::Issue
     end
 
     def self.all
-        VoteTheIssues::Scraper.scrape_issues
-        @@issues
+        if @@issues.empty?
+            VoteTheIssues::Scraper.scrape_issues
+            @@issues
+        else
+            @@issues
+        end
     end
 
 end

@@ -7,4 +7,5 @@ require_relative "./vote_the_issues/scraper"
 require "pry"
 require "nokogiri"
 require "open-uri"
+require "colorize"
 

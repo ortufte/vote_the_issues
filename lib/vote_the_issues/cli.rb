@@ -1,10 +1,14 @@
 class VoteTheIssues::CLI
    
     def call
-        puts "\nWelcome to Vote the Issues!\n"
-        puts "\nIf you would like to see a specific candidate's stance on a particular issue, enter 'candidates':\n"
-        puts "\nOR\n"
-        puts "\nIf you would like to see how all the candidate's views compare on a particular issue, enter 'issues':\n"
+        puts "\nWelcome to Vote the Issues!\n".black.on_blue
+        main_menu
+    end
+
+    def main_menu
+        puts "\nIf you would like to see a specific candidate's view on a particular issue, enter 'candidates':".colorize(:red)
+        puts "\nIf you would like to see how all of the candidate's views compare on one particular issue, enter 'issues':\n"
+        puts "\nIf you would like to exit, enter 'exit':\n".colorize(:blue)
         follow_user_preference
     end
 
@@ -29,82 +33,90 @@ class VoteTheIssues::CLI
         end
     end
 
-    def valid_input(user_input, array)
-        user_input <= array.length && user_input > 0 
+    def valid_input(array)
+        @user_input = gets.strip.to_i
+        @user_input <= array.length && @user_input > 0 
     end
 
-    def invalid_entry #DONE
+    def invalid_entry 
         puts puts "\nInvalid entry, please try again.\n"
     end
 
-    def get_candidates #DONE
+    def get_candidates 
         @candidates = VoteTheIssues::Candidate.all
     end
 
-    def view_candidates #DONE
-        puts "\nPlease select a candidate by number:\n"
+    def view_candidates 
+        puts "\nPlease select a candidate by number:\n".colorize(:blue)
         @candidates.each_with_index {|candidate, index| puts "#{index+1}: #{candidate.name}"}
     end
 
-    def get_issues #DONE
+    def get_issues 
         @issues = VoteTheIssues::Issue.all
     end
 
-    def get_candidate_issues #NEED VALID INPUT METHOD
-        user_input = gets.strip.to_i
-        candidate = @candidates[user_input]
-        @candidate_issues = candidate.issues(@candidate)
+    def get_candidate_issues 
+        until valid_input(@candidates)
+            invalid_entry
+        end
+        @candidate = @candidates[@user_input-1]
+        @candidate_issues = @candidate.issues(@candidate)
     end
 
     def view_candidate_issues #DONE
-        puts "\nPlease select an issue by number:\n"
-        @candidate_issues.each_with_index {|issue, index| puts "#{index+1}: #{issue}"}
+        puts "\nPlease select an issue by number:\n".colorize(:blue)
+        @candidate_issues.each_with_index {|issue, index| puts "#{index+1}: #{issue}"} 
     end
 
     def view_issues #DONE
-        puts "\nPlease select an issue by number:\n"
-        @issues.each.with_index(1) {|issue, index| puts "#{index}: #{issue.name}"}
+        puts "\nPlease select an issue by number:\n".colorize(:blue)
+        @issues.each_with_index {|issue, index| puts "#{index+1}: #{issue.name}"}
     end
     
-    def get_candidate_viewpoint #NEED VALID INPUT METHOD
-        issue = gets.strip.to_i
-        viewpoints = @candidate.views(@candidate)
-        puts "#{@candidate.name}'s current view on #{@candidate_issues[issue]} is:"
-        puts ""
-        puts "#{viewpoints[issue]}"
+    def get_candidate_viewpoint #DONE
 
-        puts "\n To see another candidate's stance on a particular issue, enter 'candidates':\n"
-        puts "\n To see where all the candidates stand on a particular issue, enter 'issues':\n"
-        puts "\n Enter 'exit' to exit:\n"
+        until valid_input(@candidate_issues)	
+            invalid_entry  
+        end
 
-        follow_user_preference
+            viewpoints = @candidate.views(@candidate)
+
+            puts ""
+            puts ""
+            puts "#{@candidate.name}'s current view on #{@candidate_issues[@user_input-1]} is:".colorize(:red)
+            puts ""
+            puts "#{viewpoints[@user_input-1]}"
+            puts ""
+            puts ""
+
+            main_menu
     end
 
     def issue_viewpoints #DONE
-        user_input = gets.strip.to_i
-        selection = VoteTheIssues::Issue.all[user_input-1]
-        puts "\nHere are where each of the candidates stand on #{selection.name}:\n"
-        puts " "
 
-        VoteTheIssues::Candidate.all.each do |candidate|
-            puts "#{candidate.name}:"
-            candidate_issues = candidate.issues(candidate)
-            if candidate_issues.include?(selection.name)
-                index = candidate_issues.rindex(selection.name) 
-                puts "#{candidate.views(candidate)[index]}\n"
-                puts " "
-            else
-                puts "This candidate has no offical view on this issue yet.\n"
-                puts " "
-            end
+        until valid_input(@issues)
+            invalid_entry
         end
 
-        puts "\n To select another issue, enter 'issues':\n"
-        puts "\n To view a specific candidate's view on a specific issue, enter 'candidates':\n"
-        puts "\n Enter 'exit' to exit:\n"
+            selection = VoteTheIssues::Issue.all[@user_input-1]
+            puts "\nHere are where each of the candidates stand on #{selection.name}:\n".colorize(:red)
+            puts " "
 
-        follow_user_preference
+            VoteTheIssues::Candidate.all.each do |candidate|
+                puts "#{candidate.name}:"
+                candidate_issues = candidate.issues(candidate)
+                if candidate_issues.include?(selection.name)
+                    index = candidate_issues.rindex(selection.name) 
+                    puts "#{candidate.views(candidate)[index]}\n"
+                    puts " "
+                else
+                    puts "This candidate has no offical view on this issue yet.\n"
+                    puts " "
+                end
+            end
+
+        main_menu
+
     end
-
+  
 end
-

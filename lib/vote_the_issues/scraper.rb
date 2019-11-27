@@ -23,11 +23,11 @@ class VoteTheIssues::Scraper
     
         @issues = [ ]
         things = doc.css(".issue-name")
-                
+        
         things.each do |thing|     
             @issues << thing.text
         end
-
+     
         @issues
         
     end
@@ -38,7 +38,8 @@ class VoteTheIssues::Scraper
     
         @views = [ ]
         things = doc.css(".position-stance-name")
-        
+
+   
         things.each do |thing|
             @views << thing.text
         end

@@ -1,6 +1,6 @@
 class VoteTheIssues::Candidate
 
-    attr_accessor :name, :candidate_url, :candidate_issues, :views
+    attr_accessor :name, :candidate_url, :issues, :views
 
     @@candidates = [ ]
 
@@ -9,8 +9,12 @@ class VoteTheIssues::Candidate
     end
 
     def self.all
-        VoteTheIssues::Scraper.scrape_candidates
-        @@candidates
+        if @@candidates.empty?
+            VoteTheIssues::Scraper.scrape_candidates
+            @@candidates
+        else
+            @@candidates
+        end
     end
 
     def issues(candidate)
