@@ -74,13 +74,10 @@ class VoteTheIssues::CLI
     end
     
     def get_candidate_viewpoint #DONE
-
         until valid_input(@candidate_issues)	
             invalid_entry  
         end
-
             viewpoints = @candidate.views(@candidate)
-
             puts ""
             puts ""
             puts "#{@candidate.name}'s current view on #{@candidate_issues[@user_input-1]} is:".colorize(:red)
@@ -88,16 +85,13 @@ class VoteTheIssues::CLI
             puts "#{viewpoints[@user_input-1]}"
             puts ""
             puts ""
-
             main_menu
     end
 
-    def issue_viewpoints #DONE
-
+    def issue_viewpoints 
         until valid_input(@issues)
             invalid_entry
         end
-
             selection = VoteTheIssues::Issue.all[@user_input-1]
             puts "\nHere are where each of the candidates stand on #{selection.name}:\n".colorize(:red)
             puts " "
@@ -114,9 +108,7 @@ class VoteTheIssues::CLI
                     puts " "
                 end
             end
-
         main_menu
-
     end
   
 end

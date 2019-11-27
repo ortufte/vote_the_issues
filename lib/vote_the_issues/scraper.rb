@@ -13,7 +13,7 @@ class VoteTheIssues::Scraper
             candidate_object.name = data["full_name"]
             candidate_object.candidate_url = data["slug"]
         end
-
+        
     end
 
 
@@ -27,9 +27,9 @@ class VoteTheIssues::Scraper
         things.each do |thing|     
             @issues << thing.text
         end
-     
+
         @issues
-        
+
     end
 
     def self.scrape_candidate_views(candidate_url)
@@ -58,7 +58,7 @@ class VoteTheIssues::Scraper
             issue = VoteTheIssues::Issue.new
             issue.name = topic.css("a").text
         end
-    
+\
     end
 
 end
